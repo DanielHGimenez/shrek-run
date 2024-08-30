@@ -1,0 +1,8 @@
+.Selector:hover .options, .Selector .options:hover {
+    opacity: 100;
+    display: block;
+}
+
+.Selector .option:hover .check {
+    color: white;
+}
