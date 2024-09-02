@@ -35,27 +35,6 @@ var upgrader = websocket.Upgrader{
 }
 
 func ConnectToParty(w http.ResponseWriter, r *http.Request) {
-	pos := getQueryParam("pos", r)
-	partyCode := getPathParam("id", r)
-	password := getQueryParam("password", r)
-
-	if pos == "" || partyCode == "" {
-		respond(http.StatusBadRequest, nil, w)
-		return
-	}
-
-	position, err := strconv.ParseUint(pos, 10, 8)
-	if err != nil {
-		respond(http.StatusBadRequest, "position invalid", w)
-		return
-	}
-
-	err = service.IsPartyJoinable(partyCode, password, uint8(position))
-	if err != nil {
-		respond(http.StatusBadRequest, err.Error(), w)
-		return
-	}
-
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		respond(http.StatusInternalServerError, nil, w)
@@ -63,9 +42,32 @@ func ConnectToParty(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	pos := getQueryParam("pos", r)
+	partyCode := getPathParam("id", r)
+	password := getQueryParam("password", r)
+
+	if pos == "" || partyCode == "" {
+		conn.WriteMessage(websocket.CloseUnsupportedData, nil)
+		return
+	}
+
+	position, err := strconv.ParseUint(pos, 10, 8)
+	if err != nil {
+		conn.WriteMessage(websocket.CloseUnsupportedData, nil)
+		return
+	}
+
 	err = service.JoinParty(partyCode, password, uint8(position), conn)
 	if err != nil {
-		respond(http.StatusBadRequest, err.Error(), w)
+		json, err := json.Marshal(dto.Event{Error: err.Error()})
+		if err != nil {
+			conn.WriteMessage(websocket.CloseInternalServerErr, nil)
+			log.Println(err)
+			return
+		}
+
+		conn.WriteMessage(websocket.ClosePolicyViolation, json)
+		return
 	}
 }
 
