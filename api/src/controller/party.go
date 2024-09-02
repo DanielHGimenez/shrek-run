@@ -1,10 +1,12 @@
 package controller
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"strconv"
 
+	"github.com/DanielHGim/shrek-run/api/src/config/cors"
 	"github.com/DanielHGim/shrek-run/api/src/controller/dto"
 	"github.com/DanielHGim/shrek-run/api/src/service"
 	"github.com/gorilla/websocket"
@@ -32,6 +34,7 @@ func CreateParty(w http.ResponseWriter, r *http.Request) {
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
+	CheckOrigin: cors.CheckOriginWebSocket(),
 }
 
 func ConnectToParty(w http.ResponseWriter, r *http.Request) {
