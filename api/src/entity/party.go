@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/DanielHGim/shrek-run/api/src/config/env"
+	"github.com/DanielHGim/shrek-run/api/src/controller/dto"
 	"github.com/gorilla/websocket"
 )
 
@@ -47,10 +47,16 @@ func (party *Party) waitToStart() {
 
 func (party *Party) Start() {
 	party.Started = true
+
+	event := dto.Event{
+		Data: dto.EventData{
+			Start: true,
+		},
+	}
+
 	for item := party.Clients.Front(); item != nil; item = item.Next() {
 		conn := item.Value.(Client).WebsocketConnection
-		conn.SetWriteDeadline(time.Now().Add(time.Second * env.WriteTimeout))
-		conn.WriteMessage(websocket.TextMessage, []byte("start"))
+		conn.WriteJSON(event)
 		conn.WriteMessage(websocket.CloseMessage, nil)
 		conn.Close()
 	}
@@ -89,6 +95,17 @@ func (party *Party) Join(conn *websocket.Conn, password string, position uint8, 
 
 	if party.AutoStart {
 		party.Timer.Reset(timeToStart)
+	}
+
+	event := dto.Event{
+		Data: dto.EventData{
+			Members: uint8(party.Clients.Len()),
+		},
+	}
+
+	for elem := party.Clients.Front(); elem != nil; elem = elem.Next() {
+		ws := elem.Value.(Client).WebsocketConnection
+		ws.WriteJSON(event)
 	}
 
 	return nil
