@@ -7,10 +7,10 @@ import (
 )
 
 var (
-	WriteTimeout uint64 = 10
-	CodeLenght uint64 = 6
-	TimeToStart = time.Second * 5
-	AllowedOrigins = "*"
+	WriteTimeout   uint64 = 10
+	CodeLenght     uint64 = 6
+	TimeToStart           = time.Second * 10
+	AllowedOrigins        = "*"
 )
 
 func Init() {
