@@ -68,8 +68,8 @@ func (party *Party) IsJoinable(password string, position uint8) error {
 	}
 
 	isPositionOccupied := false
-	for connection := party.Clients.Front(); connection != nil; connection.Next() {
-		if connection.Value.(Client).Position == position {
+	for client := party.Clients.Front(); client != nil; client = client.Next() {
+		if client.Value.(Client).Position == position {
 			isPositionOccupied = true
 			break
 		}
