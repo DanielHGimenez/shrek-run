@@ -1,17 +1,17 @@
 import queryString from "query-string";
 
 export function host() {
-    return process.env.API_HOST || 'localhost:9000'
+    return process.env.API_HOST || 'shrek-run-api.fly.dev'
 }
 
 export function http() {
-    return process.env.API_SECURE ? 'https://' : 'http://'
+    return 'https://'
 }
 
 export const createPartyURL = () => http() + host() + '/party'
 
 export function connectToPartyURL(code, position, password) {
-    return 'ws://' + host() + '/party/' + code + '/member?'
+    return 'wss://' + host() + '/party/' + code + '/member?'
         + queryString.stringify(
             {
                 pos: position,
