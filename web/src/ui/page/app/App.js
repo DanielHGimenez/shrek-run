@@ -40,7 +40,7 @@ function App() {
                         const ws = connectToParty(partyCode, position, password)
                         if (ws.readyState !== ws.CLOSING && ws.readyState !== ws.CLOSED) {
                             setConnection(ws)
-                            navigate("/party", { state: { position, adminCode } })
+                            navigate("/party", { state: { position, adminCode, partyCode, autoStart: isToStartAutomatically === "Yes" } })
                         }
                         else {
                             showError('Error trying to join the party.')

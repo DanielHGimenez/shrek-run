@@ -14,7 +14,7 @@ export default function Video({ options, onReady }) {
             // The Video.js player needs to be _inside_ the component el for React 18 Strict Mode. 
             const videoElement = document.createElement("video-js");
 
-            videoElement.classList.add('vjs-4-3');
+            videoElement.classList.add('vjs-16-9');
             videoRef.current.appendChild(videoElement);
 
             const player = videojs(videoElement, options, () => {

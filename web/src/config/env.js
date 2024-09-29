@@ -4,7 +4,11 @@ export function host() {
     return process.env.API_HOST || 'localhost:9000'
 }
 
-export const createPartyURL = () => 'http://' + host() + '/party'
+export function http() {
+    return process.env.API_SECURE ? 'https://' : 'http://'
+}
+
+export const createPartyURL = () => http() + host() + '/party'
 
 export function connectToPartyURL(code, position, password) {
     return 'ws://' + host() + '/party/' + code + '/member?'
@@ -19,3 +23,5 @@ export function connectToPartyURL(code, position, password) {
             }
         )
 }
+
+export const startPartyURL = (code) => http() + host() + '/party/' + code + '/joy'

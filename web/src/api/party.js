@@ -1,5 +1,5 @@
 import axios from "axios";
-import { createPartyURL, connectToPartyURL } from "../config/env";
+import { createPartyURL, connectToPartyURL, startPartyURL } from "../config/env";
 
 export async function createParty(code, password, autoStart) {
     return (await axios.post(createPartyURL(), {
@@ -12,4 +12,10 @@ export async function createParty(code, password, autoStart) {
 export function connectToParty(code, position, password) {
     const ws = new WebSocket(connectToPartyURL(code, position, password))
     return ws
+}
+
+export async function startParty(code, adminCode) {
+    return (await axios.post(startPartyURL(code), {
+        "admin-code": adminCode
+    })).data
 }
